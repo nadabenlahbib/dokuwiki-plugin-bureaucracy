@@ -220,6 +220,8 @@ class helper_plugin_bureaucracy_actiontemplate extends helper_plugin_bureaucracy
                 cleanText($this->replace($template, false)),
                 sprintf($this->getLang('summary'), $ID)
             );
+            // Add this to index the newly added pages by a form
+			idx_addPage($pageName);
         }
     }
 
