@@ -268,8 +268,6 @@ class helper_plugin_bureaucracy_actiontemplate extends helper_plugin_bureaucracy
         global $ID;
         $backupID = $ID;
 
-        $html = "<p>$thanks</p>";
-
         // Build result tree
         $pages = array_keys($this->targetpages);
         usort($pages, array($this, '_sorttargetpages'));
@@ -290,27 +288,18 @@ class helper_plugin_bureaucracy_actiontemplate extends helper_plugin_bureaucracy
             }
             $data[] = array('id' => $ID, 'level' => 1 + substr_count($ID, ':'), 'type' => 'f');
         }
-        $html .= html_buildlist($data, 'idx', array($this, 'html_list_index'), 'html_li_index');
 
-        // Add indexer bugs for every just-created page
-        $html .= '<div class="no">';
-        ob_start();
         foreach ($pages as $ID) {
             // indexerWebBug uses ID and INFO[exists], but the bureaucracy form
             // page always exists, as does the just-saved page, so INFO[exists]
             // is correct in any case
             tpl_indexerWebBug();
-
-            // the iframe will trigger real rendering of the pages to make sure
-            // any used plugins are initialized (eg. the do plugin)
-            echo '<iframe src="' . wl($ID, array('do' => 'export_html')) . '" width="1" height="1" style="visibility:hidden"></iframe>';
         }
-        $html .= ob_get_contents();
-        ob_end_clean();
-        $html .= '</div>';
-
-        $ID = $backupID;
-        return $html;
+	echo "
+		<script type=\"text/javascript\">
+			window.location = 'http://" . $_SERVER['SERVER_NAME'] . wl(end($pages)) . "';
+		</script>";
+	return true;
     }
     
     /**
